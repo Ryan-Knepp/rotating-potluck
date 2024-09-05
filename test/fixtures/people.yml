@@ -1,0 +1,29 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  pco_person: MyString
+  name: MyString
+  avatar_url: MyText
+  address: 
+  email: MyString
+  phone_number: MyString
+  times_hosted: 1
+  last_hosted_iteration: 1
+  willing_to_host: false
+  signed_up: false
+  is_organizer: false
+  is_household_primary_contact: false
+
+two:
+  pco_person: MyString
+  name: MyString
+  avatar_url: MyText
+  address: 
+  email: MyString
+  phone_number: MyString
+  times_hosted: 1
+  last_hosted_iteration: 1
+  willing_to_host: false
+  signed_up: false
+  is_organizer: false
+  is_household_primary_contact: false
