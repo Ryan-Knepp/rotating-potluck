@@ -1,5 +1,17 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  namespace :api do
+    namespace :v1 do
+      resources :potluck_iterations
+      resources :potlucks
+      resources :organizations
+      resources :households
+      resources :people do
+        get "search", on: :collection
+      end
+    end
+  end
+
   get "/login" => "auth#login"
   get "/logout" => "auth#logout"
 

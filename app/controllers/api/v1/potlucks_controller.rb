@@ -1,0 +1,51 @@
+class Api::V1::PotlucksController < ApplicationController
+  before_action :set_potluck, only: %i[ show update destroy ]
+
+  # GET /potlucks
+  def index
+    @potlucks = Potluck.all
+
+    render json: @potlucks
+  end
+
+  # GET /potlucks/1
+  def show
+    render json: @potluck
+  end
+
+  # POST /potlucks
+  def create
+    @potluck = Potluck.new(potluck_params)
+
+    if @potluck.save
+      render json: @potluck, status: :created, location: @potluck
+    else
+      render json: @potluck.errors, status: :unprocessable_entity
+    end
+  end
+
+  # PATCH/PUT /potlucks/1
+  def update
+    if @potluck.update(potluck_params)
+      render json: @potluck
+    else
+      render json: @potluck.errors, status: :unprocessable_entity
+    end
+  end
+
+  # DELETE /potlucks/1
+  def destroy
+    @potluck.destroy!
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_potluck
+      @potluck = Potluck.find(params[:id])
+    end
+
+    # Only allow a list of trusted parameters through.
+    def potluck_params
+      params.require(:potluck).permit(:kids_allowed)
+    end
+end
