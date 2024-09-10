@@ -51,7 +51,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_01_203122) do
     t.integer "times_hosted", default: 0
     t.integer "last_hosted_iteration", default: 0
     t.boolean "willing_to_host", default: false
-    t.boolean "signed_up", default: true
+    t.boolean "signed_up", default: false
     t.boolean "is_organizer", default: false
     t.boolean "is_household_primary_contact", default: false
     t.datetime "created_at", null: false
