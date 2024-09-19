@@ -1,4 +1,4 @@
-require "pco_api"
+require_relative "../../../../lib/pco"
 
 class Api::V1::PeopleController < ApplicationController
   before_action :set_person, only: %i[ show update destroy ]
@@ -17,10 +17,25 @@ class Api::V1::PeopleController < ApplicationController
 
   # POST /people
   def create
+    pco_household = params[:pco_household]
     @person = Person.new(person_params)
+    @person.organization = current_org
 
     if @person.save
-      render json: @person, status: :created, location: @person
+      if pco_household
+        household = Household.find_or_initialize_by(pco_household: pco_household)
+        if household.new_record?
+          result = PCO_Api.new(token).get_household(pco_household)
+          household.name = result["data"]["attributes"]["name"]
+          household.avatar_url = result["data"]["attributes"]["avatar"]
+          household.organization = current_org
+          household.save
+        end
+        if !household.errors.any?
+          @person.update(household: household)
+        end
+      end
+      render json: @person, status: :created
     else
       render json: @person.errors, status: :unprocessable_entity
     end
@@ -43,50 +58,39 @@ class Api::V1::PeopleController < ApplicationController
   # GET /people/search
   def search
     # search for people via the planning center api
-    api = get_pco_api
-    # /people/v2/people?include=addresses,households,emails,phone_numbers&per_page=5
-    result = api.people.v2.people.get(per_page: 5, "where[search_name]": search_params[:name], "where[status]": "active", "where[child]": false, ordering: "last_name", include: "addresses,households,emails,phone_numbers")
-    # render json: result["data"]
-    included_mapping = includes_to_mapping(result["included"])
+    pco = PCO_Api.new(token)
+    result = pco.search_people(search_params[:name], search_params[:page].to_i)
+    total = result["meta"]["total_count"]
+    included_mapping = PCO_Api.included_to_mapping(result["included"])
     people = result["data"].map do |data|
-      p = Person.new
-      p.update_from_pco(data["id"], data, included_mapping)
-      logger.info "Updated person"
-      logger.info p
+      pco_person = data["id"]
+      p = Person.find_or_initialize_by(pco_person: pco_person)
+      p.update_from_pco(pco_person, data, included_mapping)
+      if p.persisted?
+        p.save()
+      end
       p
     end
 
-    render json: people, methods: [ :pco_household ]
+    render json: { people: people, total: total }
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_person
-      @person = Person.find(params[:id])
+      if person_params[:pco_person]
+        @person = Person.find_by(pco_person: person_params[:pco_person])
+      else
+        @person = Person.find(params[:id])
+      end
     end
 
     # Only allow a list of trusted parameters through.
     def person_params
-      params.require(:person).permit(:pco_person, :name, :avatar_url, :address, :email, :phone_number, :times_hosted, :last_hosted_iteration, :willing_to_host, :signed_up, :is_organizer, :is_household_primary_contact)
+      params.require(:person).permit(:pco_person, :name, :avatar_url, :email, :phone_number, :times_hosted, :last_hosted_iteration, :willing_to_host, :signed_up, :is_organizer, :is_household_primary_contact, :is_child, address: {})
     end
 
     def search_params
-      params.permit(:name)
-    end
-
-    def get_pco_api
-      PCO::API.new(basic_auth_token: ENV["PCO_PERSONAL_TOKEN"], basic_auth_secret: ENV["PCO_PERSONAL_SECRET"])
-    end
-
-    def includes_to_mapping(includes)
-      mapping = {}
-      includes.each do |i|
-        type = i["type"].downcase
-        if mapping[type].nil?
-          mapping[type] = {}
-        end
-        mapping[type][i["id"]] = i["attributes"]
-      end
-      mapping
+      params.permit(:name, :page).with_defaults(page: 1)
     end
 end

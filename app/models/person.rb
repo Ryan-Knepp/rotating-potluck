@@ -12,11 +12,20 @@ class Person < ApplicationRecord
     self.pco_person = pco_person_id
     self.name = pco_results["attributes"]["name"]
     self.avatar_url = pco_results["attributes"]["avatar"]
+    self.is_child = pco_results["attributes"]["child"]
     update_from_included(pco_results, included_mapping)
   end
 
   def pco_household
     @pco_household
+  end
+
+  def household_signed_up
+    household.present? && household.signed_up
+  end
+
+  def as_json(options = {})
+    super(options).merge(pco_household: @pco_household, household_signed_up: household_signed_up)
   end
 
   private
@@ -64,7 +73,7 @@ class Person < ApplicationRecord
     rel["data"].each do |phone|
       data = mapping[phone["id"]]
       if data["primary"]
-        self.phone_number = data["number"]
+        self.phone_number = data["national"]
         return
       end
     end
