@@ -17,8 +17,9 @@ class Api::V1::PotlucksController < ApplicationController
   def create
     @potluck = Potluck.new(potluck_params)
 
+
     if @potluck.save
-      render json: @potluck, status: :created, location: @potluck
+      render json: @potluck, status: :created
     else
       render json: @potluck.errors, status: :unprocessable_entity
     end
@@ -46,6 +47,6 @@ class Api::V1::PotlucksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def potluck_params
-      params.require(:potluck).permit(:kids_allowed)
+      params.require(:potluck).permit(:kids_allowed, :host_person_id, :host_household_id, :potluck_iteration_id)
     end
 end

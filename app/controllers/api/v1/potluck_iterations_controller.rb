@@ -15,10 +15,10 @@ class Api::V1::PotluckIterationsController < ApplicationController
 
   # POST /potluck_iterations
   def create
-    @potluck_iteration = PotluckIteration.new(potluck_iteration_params)
+    @potluck_iteration = PotluckIteration.new(date_range: dates_to_range(params[:date_from], params[:date_to]))
 
     if @potluck_iteration.save
-      render json: @potluck_iteration, status: :created, location: @potluck_iteration
+      render json: @potluck_iteration, status: :created
     else
       render json: @potluck_iteration.errors, status: :unprocessable_entity
     end
@@ -26,7 +26,7 @@ class Api::V1::PotluckIterationsController < ApplicationController
 
   # PATCH/PUT /potluck_iterations/1
   def update
-    if @potluck_iteration.update(potluck_iteration_params)
+    if @potluck_iteration.update(date_range: dates_to_range(params[:date_from], params[:date_to]))
       render json: @potluck_iteration
     else
       render json: @potluck_iteration.errors, status: :unprocessable_entity
@@ -46,6 +46,10 @@ class Api::V1::PotluckIterationsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def potluck_iteration_params
-      params.require(:potluck_iteration).permit(:date_range_type, :date_range)
+      params.require(:potluck_iteration).permit(:date_from, :date_to)
+    end
+
+    def dates_to_range(from, to)
+      Date.parse(from)..Date.parse(to)
     end
 end
