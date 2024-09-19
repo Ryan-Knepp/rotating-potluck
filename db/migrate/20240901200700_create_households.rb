@@ -7,7 +7,7 @@ class CreateHouseholds < ActiveRecord::Migration[7.2]
       t.integer :times_hosted, default: 0
       t.integer :last_hosted_iteration, default: 0
       t.boolean :willing_to_host, default: false
-      t.boolean :signed_up, default: true
+      t.boolean :signed_up, default: false
 
       t.timestamps
     end

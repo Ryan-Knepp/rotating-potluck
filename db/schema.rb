@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_01_203122) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_19_045001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_01_203122) do
     t.integer "times_hosted", default: 0
     t.integer "last_hosted_iteration", default: 0
     t.boolean "willing_to_host", default: false
-    t.boolean "signed_up", default: true
+    t.boolean "signed_up", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organization_id", null: false
@@ -58,6 +58,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_01_203122) do
     t.datetime "updated_at", null: false
     t.bigint "household_id"
     t.bigint "organization_id", null: false
+    t.boolean "is_child", default: false
     t.index ["household_id"], name: "index_people_on_household_id"
     t.index ["organization_id"], name: "index_people_on_organization_id"
   end
@@ -68,7 +69,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_01_203122) do
   end
 
   create_table "potluck_iterations", force: :cascade do |t|
-    t.string "date_range_type"
     t.daterange "date_range"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
