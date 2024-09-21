@@ -32,6 +32,11 @@ export async function getPeople({ pageIndex, searchName }) {
     }
   );
 
+  if (!response.ok) {
+    console.log(response);
+    throw new Error("Failed to fetch people");
+  }
+
   return await response.json();
 }
 

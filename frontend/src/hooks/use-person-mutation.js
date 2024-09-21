@@ -20,6 +20,11 @@ export function usePersonMutation() {
           "Content-Type": "application/json",
         },
       });
+
+      if (!response.ok) {
+        console.log(response);
+        throw new Error("Failed to sign up person");
+      }
       return await response.json();
     },
     onMutate: async (newPerson) => {
@@ -70,6 +75,11 @@ export function usePersonMutation() {
           "Content-Type": "application/json",
         },
       });
+
+      if (!response.ok) {
+        console.log(response);
+        throw new Error("Failed to sign up household");
+      }
       return await response.json();
     },
     onSuccess: () => {
