@@ -1,12 +1,13 @@
-require "pco_api"
+require_relative "../../lib/pco"
 
 class AuthController < ApplicationController
   skip_before_action :authenticated?, only: [ :login ]
+  skip_before_action :has_org?, only: [ :login, :logout ]
 
 
   def login
-    api = get_pco_api
-    result = api.people.v2.me.get(include: "addresses,households,emails,phone_numbers,organization")
+    pco = PCO_Api.new
+    result = pco.me
     data = result["data"]
     included = result["included"]
     pco_id = data["id"]
@@ -14,6 +15,7 @@ class AuthController < ApplicationController
     if me.new_record?
       me.name = data["attributes"]["name"]
       me.avatar_url = data["attributes"]["avatar"]
+      me.signed_up = true
 
       org_data = included.find { |i| i["type"] == "Organization" }
       org = Organization.find_or_initialize_by(pco_organization: org_data["id"])
@@ -24,13 +26,10 @@ class AuthController < ApplicationController
       end
       me.organization = org
 
-      logger.info "Checking for household"
       household_data = included.find { |i| i["type"] == "Household" }
-      logger.info "Found #{household_data}"
       if household_data
         household = Household.find_or_initialize_by(pco_household: household_data["id"])
         if household.new_record?
-          logger.info "It's a new household"
           household.name = household_data["attributes"]["name"]
           household.avatar_url = household_data["attributes"]["avatar"]
           household.organization = org
@@ -57,10 +56,14 @@ class AuthController < ApplicationController
       me.save()
     end
     session[:user_id] = me.pco_person
+    session[:org_id] = me.organization_id
+    render json: me
   end
 
   def logout
     session[:user_id] = nil
+    session[:org] = nil
+    render json: { message: "Logged out" }
   end
 
   private
