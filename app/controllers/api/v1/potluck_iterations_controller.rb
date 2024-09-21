@@ -5,17 +5,17 @@ class Api::V1::PotluckIterationsController < ApplicationController
   def index
     @potluck_iterations = PotluckIteration.all
 
-    render json: @potluck_iterations
+    render json: @potluck_iterations, include: [ potlucks: { include: [ :host_household, :host_person, :households, :people ] } ]
   end
 
   # GET /potluck_iterations/1
   def show
-    render json: @potluck_iteration
+    render json: @potluck_iteration, include: [ potlucks: { include: [ :host_household, :host_person, :households, :people ] } ]
   end
 
   # POST /potluck_iterations
   def create
-    date_range = dates_to_range(params[:date_from], params[:date_to])
+    date_range = dates_to_range(potluck_iteration_params[:date_from], potluck_iteration_params[:date_to])
     @potluck_iteration = PotluckIteration.find_or_initialize_by(date_range: date_range, organization: current_org)
 
     if @potluck_iteration.save

@@ -5,12 +5,12 @@ class Api::V1::PotlucksController < ApplicationController
   def index
     @potlucks = Potluck.all
 
-    render json: @potlucks
+    render json: @potlucks, include: [ :host_household, :host_person, :households, :people ]
   end
 
   # GET /potlucks/1
   def show
-    render json: @potluck
+    render json: @potluck, include: [ :host_household, :host_person, :people ]
   end
 
   # POST /potlucks
