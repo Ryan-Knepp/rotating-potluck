@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_09_20_044354) do
+ActiveRecord::Schema[7.2].define(version: 2024_09_21_035652) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -83,8 +83,10 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_20_044354) do
     t.bigint "potluck_iteration_id", null: false
     t.bigint "host_person_id"
     t.bigint "host_household_id"
+    t.bigint "organization_id", null: false
     t.index ["host_household_id"], name: "index_potlucks_on_host_household_id"
     t.index ["host_person_id"], name: "index_potlucks_on_host_person_id"
+    t.index ["organization_id"], name: "index_potlucks_on_organization_id"
     t.index ["potluck_iteration_id"], name: "index_potlucks_on_potluck_iteration_id"
   end
 
@@ -93,6 +95,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_09_20_044354) do
   add_foreign_key "people", "organizations"
   add_foreign_key "potluck_iterations", "organizations"
   add_foreign_key "potlucks", "households", column: "host_household_id"
+  add_foreign_key "potlucks", "organizations"
   add_foreign_key "potlucks", "people", column: "host_person_id"
   add_foreign_key "potlucks", "potluck_iterations"
 end
