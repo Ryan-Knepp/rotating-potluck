@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as PotlucksImport } from './routes/potlucks'
 import { Route as PeopleImport } from './routes/people'
+import { Route as HomeImport } from './routes/home'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
@@ -24,6 +25,11 @@ const PotlucksRoute = PotlucksImport.update({
 
 const PeopleRoute = PeopleImport.update({
   path: '/people',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const HomeRoute = HomeImport.update({
+  path: '/home',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -41,6 +47,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/home': {
+      id: '/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof HomeImport
       parentRoute: typeof rootRoute
     }
     '/people': {
@@ -64,12 +77,14 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/home': typeof HomeRoute
   '/people': typeof PeopleRoute
   '/potlucks': typeof PotlucksRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/home': typeof HomeRoute
   '/people': typeof PeopleRoute
   '/potlucks': typeof PotlucksRoute
 }
@@ -77,27 +92,30 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/home': typeof HomeRoute
   '/people': typeof PeopleRoute
   '/potlucks': typeof PotlucksRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/people' | '/potlucks'
+  fullPaths: '/' | '/home' | '/people' | '/potlucks'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/people' | '/potlucks'
-  id: '__root__' | '/' | '/people' | '/potlucks'
+  to: '/' | '/home' | '/people' | '/potlucks'
+  id: '__root__' | '/' | '/home' | '/people' | '/potlucks'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HomeRoute: typeof HomeRoute
   PeopleRoute: typeof PeopleRoute
   PotlucksRoute: typeof PotlucksRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HomeRoute: HomeRoute,
   PeopleRoute: PeopleRoute,
   PotlucksRoute: PotlucksRoute,
 }
@@ -115,12 +133,16 @@ export const routeTree = rootRoute
       "filePath": "__root.jsx",
       "children": [
         "/",
+        "/home",
         "/people",
         "/potlucks"
       ]
     },
     "/": {
       "filePath": "index.jsx"
+    },
+    "/home": {
+      "filePath": "home.jsx"
     },
     "/people": {
       "filePath": "people.jsx"
