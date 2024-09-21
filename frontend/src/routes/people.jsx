@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { columns } from "@/components/people/columns";
 import { DataTable } from "@/components/people/data-table";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -9,7 +9,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient();
 
-export const Route = createLazyFileRoute("/people")({
+export const Route = createFileRoute("/people")({
   component: People,
 });
 

@@ -1,4 +1,4 @@
-import { createLazyFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Wizard from "@/components/potluck/wizard";
 
@@ -23,7 +23,7 @@ const attendeesQueryOptions = {
   queryFn: () => fetchAttendees(),
 };
 
-export const Route = createLazyFileRoute("/potlucks")({
+export const Route = createFileRoute("/potlucks")({
   loader: ({ context: { queryClient } }) =>
     queryClient.ensureQueryData(attendeesQueryOptions),
   component: Potlucks,
