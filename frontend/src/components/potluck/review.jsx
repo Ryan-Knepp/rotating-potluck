@@ -137,7 +137,7 @@ function AttendeeDetails({ attendee }) {
           attendee.people
             .filter((person) => !person.is_child)
             .map((person) => (
-              <p className="text-sm text-neutral-500">
+              <p key={person.id} className="text-sm text-neutral-500">
                 <span className="text-neutral-700">
                   {person.name.split(" ")[0]}
                 </span>
@@ -207,7 +207,11 @@ export default function Review({ onSubmit, onGoBack, potlucks }) {
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
           {potlucks.map((potluck) => (
-            <TabsContent value={getPotluckKey(potluck)} className="mt=0">
+            <TabsContent
+              key={getPotluckKey(potluck)}
+              value={getPotluckKey(potluck)}
+              className="mt=0"
+            >
               <Card className="w-full">
                 <CardContent className="p-6">
                   <HostDetails host={getPotluckHost(potluck)} />
@@ -215,7 +219,10 @@ export default function Review({ onSubmit, onGoBack, potlucks }) {
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {potluck.attendees.map((guest) => (
                       <li key={getAttendeeKey(guest)}>
-                        <AttendeeDetails attendee={guest} />
+                        <AttendeeDetails
+                          key={getAttendeeKey(guest)}
+                          attendee={guest}
+                        />
                       </li>
                     ))}
                   </ul>

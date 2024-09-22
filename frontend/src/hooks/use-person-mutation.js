@@ -4,7 +4,6 @@ export function usePersonMutation() {
   const queryClient = useQueryClient();
   const signUpPersonMutation = useMutation({
     mutationFn: async (person) => {
-      console.log(person);
       const url = person.id
         ? `${import.meta.env.VITE_API_URL}/api/v1/people/${person.id}`
         : `${import.meta.env.VITE_API_URL}/api/v1/people/`;
@@ -55,7 +54,6 @@ export function usePersonMutation() {
 
   const signUpHouseholdMutation = useMutation({
     mutationFn: async (person) => {
-      console.log(person);
       const url = person.household_id
         ? `${import.meta.env.VITE_API_URL}/api/v1/households/${person.household_id}`
         : `${import.meta.env.VITE_API_URL}/api/v1/households/`;

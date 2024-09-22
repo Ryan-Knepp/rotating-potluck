@@ -1,13 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { columns } from "@/components/people/columns";
 import { DataTable } from "@/components/people/data-table";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Search from "@/components/search";
 import { useState } from "react";
 import useDebounce from "@/hooks/use-debounce";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-const queryClient = new QueryClient();
 
 export const Route = createFileRoute("/people")({
   component: People,

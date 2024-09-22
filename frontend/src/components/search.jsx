@@ -4,7 +4,7 @@ import { Search, X } from "lucide-react";
 
 export default function SearchInput({ value, setValue, onSubmit }) {
   return (
-    <div className="relative w-full max-w-sm my-2 px-2 md:px-0">
+    <div className="relative w-full md:max-w-sm my-2 px-2 md:px-0">
       <form
         onSubmit={(e) => {
           e.preventDefault();

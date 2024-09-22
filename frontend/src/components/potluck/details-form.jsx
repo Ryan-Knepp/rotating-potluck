@@ -208,10 +208,7 @@ export default function PotluckCreateForm({
                         mode="range"
                         defaultMonth={field.value?.from}
                         selected={field.value}
-                        onSelect={(value) => {
-                          console.log(value);
-                          field.onChange(value);
-                        }}
+                        onSelect={field.onChange}
                         numberOfMonths={2}
                       />
                     </PopoverContent>

@@ -24,7 +24,6 @@ export default function Wizard({ attendees }) {
   };
 
   async function onDetailsSubmit(data) {
-    console.log(data);
     try {
       setPoluckIterationId(1);
       setCurrentStep(1);
@@ -35,7 +34,6 @@ export default function Wizard({ attendees }) {
   }
 
   function onHostsSubmit(data) {
-    console.log(data);
     const mergedAttendees = [...attendees.households, ...attendees.people];
     const groupCount =
       config.groupType === "hosts"
@@ -84,7 +82,6 @@ export default function Wizard({ attendees }) {
 
     setPotlucks(potlucks);
     setCurrentStep(2);
-    console.log(potlucks);
 
     // TODO: we now have updates on who's willing and not willing to host, need to send a put to update this field for all
   }
@@ -109,7 +106,6 @@ export default function Wizard({ attendees }) {
       date_from: config.dateRange.from,
       date_to: config.dateRange.to,
     };
-    console.log(body);
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/v1/potluck_iterations`,
@@ -123,7 +119,7 @@ export default function Wizard({ attendees }) {
         }
       );
       if (response.ok) {
-        navigate({ to: "/" });
+        navigate({ to: "/dashboard" });
       } else {
         console.log(response);
         throw new Error("Failed to create potluck iteration");
