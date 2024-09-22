@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { LogIn } from "lucide-react";
+import { UtensilsCrossed } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -15,8 +15,14 @@ export default function Nav() {
     <NavigationMenu className="max-w-full justify-between px-2 h-12 md:h-16 bg-purple-600">
       <NavigationMenuList>
         <NavigationMenuItem>
-          <Link to="/" className={customStyle}>
-            Home
+          <Link to="/" className="text-purple-50">
+            <UtensilsCrossed className="h-6 w-6 mx-2 md:ml-4" />
+            <span className="sr-only">Church Potluck Organizer</span>
+          </Link>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link to="/dashboard" className={customStyle}>
+            Dashboard
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
@@ -32,14 +38,8 @@ export default function Nav() {
       </NavigationMenuList>
       <NavigationMenuList className="justify-end">
         <NavigationMenuItem>
-          <Button
-            asChild
-            className="h-8 md:h-10 px-2 md:px-4 py-1 md:py-2 bg-purple-700 hover:bg-purple-800 text-purple-50 hover:text-purple-50 texst-md md:text-lg font-semibold rounded-lg shadow-md"
-          >
-            <a href="/login" className="flex items-center justify-center">
-              <LogIn className="w-4 h-4 mr-2" />
-              Login
-            </a>
+          <Button asChild className={customStyle}>
+            <a href="/login">Log in</a>
           </Button>
         </NavigationMenuItem>
       </NavigationMenuList>
