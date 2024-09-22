@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Users, Calendar, CookingPot } from "lucide-react";
-import pcoLogo from "@/assets/planning-center-full-color.svg";
 
 export const Route = createFileRoute("/")({
   component: Index,
