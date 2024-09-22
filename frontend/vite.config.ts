@@ -13,30 +13,10 @@ export default defineConfig({
     },
   },
   server: {
-    host: "127.125.0.1",
+    host: "localhost",
     port: 8000,
     cors: {
       origin: false,
-    },
-    proxy: {
-      "/login": {
-        target: "http://127.125.0.1:3000",
-        secure: false,
-        changeOrigin: true,
-        cookiePathRewrite: { "*": "/" },
-      },
-      "/logout": {
-        target: "http://127.125.0.1:3000",
-        changeOrigin: true,
-        secure: false,
-        cookiePathRewrite: { "*": "/" },
-      },
-      "/auth/complete": {
-        target: "http://127.125.0.1:3000",
-        changeOrigin: true,
-        secure: false,
-        cookiePathRewrite: { "*": "/" },
-      },
     },
   },
 });

@@ -65,7 +65,7 @@ const getActivePotluckIterations = (potluckIterations) => {
   });
 };
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_auth/dashboard")({
   loader: ({ context: { queryClient } }) => {
     queryClient.ensureQueryData(attendeesQueryOptions);
     queryClient.ensureQueryData(potluckIterationsQueryOptions);

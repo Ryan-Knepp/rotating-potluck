@@ -11,31 +11,49 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as PotlucksImport } from './routes/potlucks'
-import { Route as PeopleImport } from './routes/people'
-import { Route as HomeImport } from './routes/home'
+import { Route as LoginImport } from './routes/login'
+import { Route as AuthImport } from './routes/_auth'
 import { Route as IndexImport } from './routes/index'
+import { Route as AuthCompleteImport } from './routes/auth.complete'
+import { Route as AuthPotlucksImport } from './routes/_auth.potlucks'
+import { Route as AuthPeopleImport } from './routes/_auth.people'
+import { Route as AuthDashboardImport } from './routes/_auth.dashboard'
 
 // Create/Update Routes
 
-const PotlucksRoute = PotlucksImport.update({
-  path: '/potlucks',
+const LoginRoute = LoginImport.update({
+  path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
 
-const PeopleRoute = PeopleImport.update({
-  path: '/people',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const HomeRoute = HomeImport.update({
-  path: '/home',
+const AuthRoute = AuthImport.update({
+  id: '/_auth',
   getParentRoute: () => rootRoute,
 } as any)
 
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const AuthCompleteRoute = AuthCompleteImport.update({
+  path: '/auth/complete',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthPotlucksRoute = AuthPotlucksImport.update({
+  path: '/potlucks',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthPeopleRoute = AuthPeopleImport.update({
+  path: '/people',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthDashboardRoute = AuthDashboardImport.update({
+  path: '/dashboard',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -49,25 +67,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/home': {
-      id: '/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof HomeImport
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    '/people': {
-      id: '/people'
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/_auth/dashboard': {
+      id: '/_auth/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthDashboardImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/people': {
+      id: '/_auth/people'
       path: '/people'
       fullPath: '/people'
-      preLoaderRoute: typeof PeopleImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthPeopleImport
+      parentRoute: typeof AuthImport
     }
-    '/potlucks': {
-      id: '/potlucks'
+    '/_auth/potlucks': {
+      id: '/_auth/potlucks'
       path: '/potlucks'
       fullPath: '/potlucks'
-      preLoaderRoute: typeof PotlucksImport
+      preLoaderRoute: typeof AuthPotlucksImport
+      parentRoute: typeof AuthImport
+    }
+    '/auth/complete': {
+      id: '/auth/complete'
+      path: '/auth/complete'
+      fullPath: '/auth/complete'
+      preLoaderRoute: typeof AuthCompleteImport
       parentRoute: typeof rootRoute
     }
   }
@@ -75,49 +114,94 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface AuthRouteChildren {
+  AuthDashboardRoute: typeof AuthDashboardRoute
+  AuthPeopleRoute: typeof AuthPeopleRoute
+  AuthPotlucksRoute: typeof AuthPotlucksRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthDashboardRoute: AuthDashboardRoute,
+  AuthPeopleRoute: AuthPeopleRoute,
+  AuthPotlucksRoute: AuthPotlucksRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/home': typeof HomeRoute
-  '/people': typeof PeopleRoute
-  '/potlucks': typeof PotlucksRoute
+  '': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/dashboard': typeof AuthDashboardRoute
+  '/people': typeof AuthPeopleRoute
+  '/potlucks': typeof AuthPotlucksRoute
+  '/auth/complete': typeof AuthCompleteRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/home': typeof HomeRoute
-  '/people': typeof PeopleRoute
-  '/potlucks': typeof PotlucksRoute
+  '': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/dashboard': typeof AuthDashboardRoute
+  '/people': typeof AuthPeopleRoute
+  '/potlucks': typeof AuthPotlucksRoute
+  '/auth/complete': typeof AuthCompleteRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/home': typeof HomeRoute
-  '/people': typeof PeopleRoute
-  '/potlucks': typeof PotlucksRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/login': typeof LoginRoute
+  '/_auth/dashboard': typeof AuthDashboardRoute
+  '/_auth/people': typeof AuthPeopleRoute
+  '/_auth/potlucks': typeof AuthPotlucksRoute
+  '/auth/complete': typeof AuthCompleteRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/home' | '/people' | '/potlucks'
+  fullPaths:
+    | '/'
+    | ''
+    | '/login'
+    | '/dashboard'
+    | '/people'
+    | '/potlucks'
+    | '/auth/complete'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/people' | '/potlucks'
-  id: '__root__' | '/' | '/home' | '/people' | '/potlucks'
+  to:
+    | '/'
+    | ''
+    | '/login'
+    | '/dashboard'
+    | '/people'
+    | '/potlucks'
+    | '/auth/complete'
+  id:
+    | '__root__'
+    | '/'
+    | '/_auth'
+    | '/login'
+    | '/_auth/dashboard'
+    | '/_auth/people'
+    | '/_auth/potlucks'
+    | '/auth/complete'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  HomeRoute: typeof HomeRoute
-  PeopleRoute: typeof PeopleRoute
-  PotlucksRoute: typeof PotlucksRoute
+  AuthRoute: typeof AuthRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  AuthCompleteRoute: typeof AuthCompleteRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  HomeRoute: HomeRoute,
-  PeopleRoute: PeopleRoute,
-  PotlucksRoute: PotlucksRoute,
+  AuthRoute: AuthRouteWithChildren,
+  LoginRoute: LoginRoute,
+  AuthCompleteRoute: AuthCompleteRoute,
 }
 
 export const routeTree = rootRoute
@@ -133,22 +217,39 @@ export const routeTree = rootRoute
       "filePath": "__root.jsx",
       "children": [
         "/",
-        "/home",
-        "/people",
-        "/potlucks"
+        "/_auth",
+        "/login",
+        "/auth/complete"
       ]
     },
     "/": {
       "filePath": "index.jsx"
     },
-    "/home": {
-      "filePath": "home.jsx"
+    "/_auth": {
+      "filePath": "_auth.jsx",
+      "children": [
+        "/_auth/dashboard",
+        "/_auth/people",
+        "/_auth/potlucks"
+      ]
     },
-    "/people": {
-      "filePath": "people.jsx"
+    "/login": {
+      "filePath": "login.jsx"
     },
-    "/potlucks": {
-      "filePath": "potlucks.jsx"
+    "/_auth/dashboard": {
+      "filePath": "_auth.dashboard.jsx",
+      "parent": "/_auth"
+    },
+    "/_auth/people": {
+      "filePath": "_auth.people.jsx",
+      "parent": "/_auth"
+    },
+    "/_auth/potlucks": {
+      "filePath": "_auth.potlucks.jsx",
+      "parent": "/_auth"
+    },
+    "/auth/complete": {
+      "filePath": "auth.complete.jsx"
     }
   }
 }

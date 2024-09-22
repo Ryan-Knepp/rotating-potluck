@@ -1,12 +1,19 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Users, Calendar, CookingPot } from "lucide-react";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/")({
+  beforeLoad: ({ context: { auth } }) => {
+    if (auth.isAuthenticated) {
+      throw redirect({ to: "/dashboard" });
+    }
+  },
   component: Index,
 });
 
 export default function Index() {
+  const auth = useAuth();
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
@@ -27,7 +34,7 @@ export default function Index() {
                   Log in with your Planning Center account to get started.
                 </p>
                 <Button
-                  onClick={console.log}
+                  onClick={() => auth.login()}
                   size="lg"
                   className="bg-gradient-to-br from-purple-600 to-cyan-600"
                 >

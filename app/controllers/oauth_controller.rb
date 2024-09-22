@@ -35,7 +35,8 @@ class OauthController < ApplicationController
 
 
   def logout
-    api.oauth.revoke.post(
+    pco = PCO_Api.new(token)
+    pco.api.oauth.revoke.post(
       token: token.token,
       client_id: OAUTH_APP_ID,
       client_secret: OAUTH_SECRET

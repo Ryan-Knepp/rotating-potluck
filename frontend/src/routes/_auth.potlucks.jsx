@@ -23,7 +23,7 @@ const attendeesQueryOptions = {
   queryFn: () => fetchAttendees(),
 };
 
-export const Route = createFileRoute("/potlucks")({
+export const Route = createFileRoute("/_auth/potlucks")({
   loader: ({ context: { queryClient } }) =>
     queryClient.ensureQueryData(attendeesQueryOptions),
   component: Potlucks,

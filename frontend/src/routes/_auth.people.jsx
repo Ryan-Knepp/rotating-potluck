@@ -5,7 +5,7 @@ import Search from "@/components/search";
 import { useState } from "react";
 import useDebounce from "@/hooks/use-debounce";
 
-export const Route = createFileRoute("/people")({
+export const Route = createFileRoute("/_auth/people")({
   component: People,
 });
 
