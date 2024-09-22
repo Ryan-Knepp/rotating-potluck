@@ -5,7 +5,7 @@ class Api::V1::HouseholdsController < ApplicationController
 
   # GET /households
   def index
-    @households = Household.all
+    @households = current_org.households.all
 
     render json: @households
   end
@@ -61,9 +61,9 @@ class Api::V1::HouseholdsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_household
       if params[:pco_household]
-        @household = Household.find_by(pco_household: params[:pco_household])
+        @household = current_org.households.find_by(pco_household: params[:pco_household])
       else
-        @household = Household.find(params[:id])
+        @household = current_org.households.find(params[:id])
       end
     end
 

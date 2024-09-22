@@ -3,7 +3,7 @@ class Api::V1::PotlucksController < ApplicationController
 
   # GET /potlucks
   def index
-    @potlucks = Potluck.all
+    @potlucks = current_org.potlucks.all
 
     render json: @potlucks, include: [ :host_household, :host_person, :households, :people ]
   end
@@ -42,7 +42,7 @@ class Api::V1::PotlucksController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_potluck
-      @potluck = Potluck.find(params[:id])
+      @potluck = current_org.potlucks.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.

@@ -5,7 +5,7 @@ class Api::V1::PeopleController < ApplicationController
 
   # GET /people
   def index
-    @people = Person.all
+    @people = current_org.people.all
 
     render json: @people
   end
@@ -79,9 +79,9 @@ class Api::V1::PeopleController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_person
       if person_params[:pco_person]
-        @person = Person.find_by(pco_person: person_params[:pco_person])
+        @person = current_org.people.find_by(pco_person: person_params[:pco_person])
       else
-        @person = Person.find(params[:id])
+        @person = current_org.people.find(params[:id])
       end
     end
 
