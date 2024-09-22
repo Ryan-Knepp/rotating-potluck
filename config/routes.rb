@@ -14,11 +14,8 @@ Rails.application.routes.draw do
     end
   end
 
-  # pseudo login using personal access token
-  get "login" => "auth#login"
-  get "logout" => "auth#logout"
-
   # actual oauth2 login
+  get "auth/url" => "oauth#url"
   get "auth/login" => "oauth#login"
   get "auth/complete" => "oauth#complete"
   get "auth/logout" => "oauth#logout"

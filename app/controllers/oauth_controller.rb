@@ -8,14 +8,11 @@ class OauthController < ApplicationController
   API_URL = "https://api.planningcenteronline.com"
   TOKEN_EXPIRATION_PADDING = 300
 
-  skip_before_action :authenticated?, only: [ :login, :complete ]
-  skip_before_action :has_org?, only: [ :login, :complete, :logout ]
+  skip_before_action :authenticated?, only: [ :login, :complete, :url ]
+  skip_before_action :has_org?, only: [ :login, :complete, :logout, :url ]
 
-  def login_url
-    client.auth_code.authorize_url(
-      scope: "people",
-      redirect_uri: "#{DOMAIN}/auth/complete"
-    )
+  def url
+    render json: { url: login_url }
   end
 
   def login
@@ -33,7 +30,7 @@ class OauthController < ApplicationController
     user = get_user_data
     session[:user_id] = user.pco_person
     session[:org_id] = user.organization_id
-    redirect_back_or_to("/")
+    render json: user
   end
 
 
@@ -44,12 +41,19 @@ class OauthController < ApplicationController
       client_secret: OAUTH_SECRET
     )
     session.clear
-    redirect_to "/"
+    render json: { message: "Logged out" }
   end
 
   private
     def client
       OAuth2::Client.new(OAUTH_APP_ID, OAUTH_SECRET, site: API_URL)
+    end
+
+    def login_url
+      client.auth_code.authorize_url(
+        scope: "people",
+        redirect_uri: "#{DOMAIN}/auth/complete"
+      )
     end
 
     def token
