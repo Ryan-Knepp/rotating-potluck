@@ -34,6 +34,42 @@ export default function Wizard({ attendees }) {
   }
 
   function onHostsSubmit(data) {
+    // send out willing_to_host updates if needed
+    // don't care too much about the response right now
+    data.hosts
+      .filter((host) => {
+        const hostRecord = host.household || host.person;
+        return !hostRecord.willing_to_host;
+      })
+      .forEach((host) => {
+        const hostRecord = host.household || host.person;
+        const url = `${import.meta.env.VITE_API_URL}/api/v1/${isHousehold(hostRecord) ? "households" : "people"}/${hostRecord.id}`;
+        fetch(url, {
+          method: "PUT",
+          credentials: "include",
+          body: JSON.stringify({ willing_to_host: true }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      });
+    data.notHosts
+      .filter((host) => {
+        const hostRecord = host.household || host.person;
+        return hostRecord.willing_to_host;
+      })
+      .forEach((host) => {
+        const hostRecord = host.household || host.person;
+        const url = `${import.meta.env.VITE_API_URL}/api/v1/${isHousehold(hostRecord) ? "households" : "people"}/${hostRecord.id}`;
+        fetch(url, {
+          method: "PUT",
+          credentials: "include",
+          body: JSON.stringify({ willing_to_host: false }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      });
     const mergedAttendees = [...attendees.households, ...attendees.people];
     const groupCount =
       config.groupType === "hosts"

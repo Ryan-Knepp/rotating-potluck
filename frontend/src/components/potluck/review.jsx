@@ -89,7 +89,7 @@ function HostDetails({ host }) {
             host.people
               .filter((person) => !person.is_child)
               .map((person) => (
-                <p className="text-sm text-neutral-500">
+                <p key={person.id} className="text-sm text-neutral-500">
                   <span className="text-neutral-700">
                     {person.name.split(" ")[0]}
                   </span>
