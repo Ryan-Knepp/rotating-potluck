@@ -21,34 +21,23 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMemo, useState } from "react";
-
-export async function getPeople({ pageIndex, searchName }) {
-  const response = await fetch(
-    `${
-      import.meta.env.VITE_API_URL
-    }/api/v1/people/search?name=${searchName}&page=${pageIndex + 1}`,
-    {
-      credentials: "include",
-    }
-  );
-
-  if (!response.ok) {
-    console.log(response);
-    throw new Error("Failed to fetch people");
-  }
-
-  return await response.json();
-}
+import { useApi } from "@/hooks/use-api";
 
 export function DataTable({ columns, search }) {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 25,
   });
+  const { fetcher } = useApi();
 
   const dataQuery = useQuery({
     queryKey: ["people", pagination, search],
-    queryFn: () => getPeople({ ...pagination, searchName: search }),
+    queryFn: () =>
+      fetcher(
+        `${
+          import.meta.env.VITE_API_URL
+        }/api/v1/people/search?name=${search}&page=${pagination.pageIndex + 1}`
+      ),
     placeholderData: keepPreviousData, // don't have 0 rows flash while changing pages/loading next page
   });
   const defaultData = useMemo(() => [], []);

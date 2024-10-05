@@ -1,36 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useApi } from "@/hooks/use-api";
 import Wizard from "@/components/potluck/wizard";
 
-const fetchAttendees = async () => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/api/v1/attendees`,
-    {
-      credentials: "include",
-    }
-  );
-
-  if (!response.ok) {
-    console.log(response);
-    throw new Error("Failed to fetch attendees");
-  }
-
-  return await response.json();
-};
-
-const attendeesQueryOptions = {
+const attendeesQueryOptions = (fetcher) => ({
   queryKey: ["attendees"],
-  queryFn: () => fetchAttendees(),
-};
+  queryFn: () => fetcher(`${import.meta.env.VITE_API_URL}/api/v1/attendees`),
+});
 
 export const Route = createFileRoute("/_auth/potlucks")({
-  loader: ({ context: { queryClient } }) =>
-    queryClient.ensureQueryData(attendeesQueryOptions),
+  loader: ({ context: { queryClient, api } }) =>
+    queryClient.ensureQueryData(attendeesQueryOptions(api.fetcher)),
   component: Potlucks,
 });
 
 function Potlucks() {
-  const attendeesQuery = useSuspenseQuery(attendeesQueryOptions);
+  const { fetcher } = useApi();
+  const attendeesQuery = useSuspenseQuery(attendeesQueryOptions(fetcher));
   const attendees = attendeesQuery.data;
 
   return (
