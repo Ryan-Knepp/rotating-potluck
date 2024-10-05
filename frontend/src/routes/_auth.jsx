@@ -6,7 +6,7 @@ export const Route = createFileRoute("/_auth")({
       throw redirect({
         to: "/login",
         search: {
-          redirect: location.href,
+          reason: "You must be logged in to access this page",
         },
       });
     }

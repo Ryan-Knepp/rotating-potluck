@@ -1,7 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useApi } from "@/hooks/use-api";
 
 export function usePersonMutation() {
   const queryClient = useQueryClient();
+  const { fetcher } = useApi();
+
   const signUpPersonMutation = useMutation({
     mutationFn: async (person) => {
       const url = person.id
@@ -11,20 +14,10 @@ export function usePersonMutation() {
       const body = person.id
         ? { signed_up: true }
         : { ...person, signed_up: true };
-      const response = await fetch(url, {
+      return await fetcher(url, {
         method,
         body: JSON.stringify(body),
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
-
-      if (!response.ok) {
-        console.log(response);
-        throw new Error("Failed to sign up person");
-      }
-      return await response.json();
     },
     onMutate: async (newPerson) => {
       newPerson.signed_up = true;
@@ -65,20 +58,10 @@ export function usePersonMutation() {
             signed_up: true,
             update_from_pco: true,
           };
-      const response = await fetch(url, {
+      return await fetcher(url, {
         method,
         body: JSON.stringify(body),
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
-
-      if (!response.ok) {
-        console.log(response);
-        throw new Error("Failed to sign up household");
-      }
-      return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
