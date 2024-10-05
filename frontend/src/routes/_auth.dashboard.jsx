@@ -14,49 +14,19 @@ import {
 import { useSuspenseQuery } from "@tanstack/react-query";
 import PotluckIterationList from "@/components/dashboard/potluck-iteration-list";
 import { splitDateRange } from "@/lib/utils";
+import { useApi } from "@/hooks/use-api";
 import { isPast, isToday, isFuture } from "date-fns";
 
-const fetchAttendees = async () => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/api/v1/attendees`,
-    {
-      credentials: "include",
-    }
-  );
-
-  if (!response.ok) {
-    console.log(response);
-    throw new Error("Failed to fetch attendees");
-  }
-
-  return await response.json();
-};
-
-const attendeesQueryOptions = {
+const attendeesQueryOptions = (fetcher) => ({
   queryKey: ["attendees"],
-  queryFn: () => fetchAttendees(),
-};
+  queryFn: () => fetcher(`${import.meta.env.VITE_API_URL}/api/v1/attendees`),
+});
 
-const fetchPotluckIterations = async () => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_URL}/api/v1/potluck_iterations`,
-    {
-      credentials: "include",
-    }
-  );
-
-  if (!response.ok) {
-    console.log(response);
-    throw new Error("Failed to fetch potluck iterations");
-  }
-
-  return await response.json();
-};
-
-const potluckIterationsQueryOptions = {
+const potluckIterationsQueryOptions = (fetcher) => ({
   queryKey: ["potluck-iterations"],
-  queryFn: () => fetchPotluckIterations(),
-};
+  queryFn: () =>
+    fetcher(`${import.meta.env.VITE_API_URL}/api/v1/potluck_iterations`),
+});
 
 const getActivePotluckIterations = (potluckIterations) => {
   return potluckIterations.filter((iteration) => {
@@ -66,19 +36,20 @@ const getActivePotluckIterations = (potluckIterations) => {
 };
 
 export const Route = createFileRoute("/_auth/dashboard")({
-  loader: ({ context: { queryClient } }) => {
-    queryClient.ensureQueryData(attendeesQueryOptions);
-    queryClient.ensureQueryData(potluckIterationsQueryOptions);
+  loader: ({ context: { queryClient, api } }) => {
+    queryClient.ensureQueryData(attendeesQueryOptions(api.fetcher));
+    queryClient.ensureQueryData(potluckIterationsQueryOptions(api.fetcher));
   },
   component: RotatingPotluckDashboard,
 });
 
 export default function RotatingPotluckDashboard() {
-  const attendeesQuery = useSuspenseQuery(attendeesQueryOptions);
+  const { fetcher } = useApi();
+  const attendeesQuery = useSuspenseQuery(attendeesQueryOptions(fetcher));
   const attendees = attendeesQuery.data;
 
   const potluckIterationsQuery = useSuspenseQuery(
-    potluckIterationsQueryOptions
+    potluckIterationsQueryOptions(fetcher)
   );
   const potluckIterations = potluckIterationsQuery.data;
 

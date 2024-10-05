@@ -5,12 +5,14 @@ import HostsLists from "@/components/potluck/hosts-lists";
 import Review from "@/components/potluck/review";
 import Stepper from "@/components/stepper";
 import { useNavigate } from "@tanstack/react-router";
+import { useApi } from "@/hooks/use-api";
 
 export default function Wizard({ attendees }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [potluckIterationId, setPoluckIterationId] = useState();
   const [config, setConfig] = useState();
   const [potlucks, setPotlucks] = useState([]);
+  const { fetcher } = useApi();
 
   const navigate = useNavigate({ from: "/potlucks" });
 
@@ -143,23 +145,14 @@ export default function Wizard({ attendees }) {
       date_to: config.dateRange.to,
     };
     try {
-      const response = await fetch(
+      await fetcher(
         `${import.meta.env.VITE_API_URL}/api/v1/potluck_iterations`,
         {
           method: "POST",
-          credentials: "include",
           body: JSON.stringify(body),
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
-      if (response.ok) {
-        navigate({ to: "/dashboard" });
-      } else {
-        console.log(response);
-        throw new Error("Failed to create potluck iteration");
-      }
+      navigate({ to: "/dashboard" });
     } catch (e) {
       console.log(e);
     }

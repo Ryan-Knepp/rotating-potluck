@@ -71,13 +71,18 @@ export function AuthProvider({ children }) {
     return user;
   };
 
+  const clearUser = () => {
+    clearStoredUser();
+    setUser(null);
+  };
+
   useEffect(() => {
     setUser(getStoredUser());
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, login, logout, authComplete }}
+      value={{ user, isAuthenticated, login, logout, authComplete, clearUser }}
     >
       {children}
     </AuthContext.Provider>
