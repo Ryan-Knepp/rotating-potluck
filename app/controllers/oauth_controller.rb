@@ -1,4 +1,4 @@
-require_relative "../../lib/pco"
+require_relative "../../lib/api"
 require "oauth2"
 
 class OauthController < ApplicationController
@@ -35,7 +35,7 @@ class OauthController < ApplicationController
 
 
   def logout
-    pco = PCO_Api.new(token)
+    pco = Api.new(token)
     pco.api.oauth.revoke.post(
       token: token.token,
       client_id: OAUTH_APP_ID,
@@ -70,7 +70,7 @@ class OauthController < ApplicationController
     end
 
     def get_user_data
-      pco = PCO_Api.new(token)
+      pco = Api.new(token)
       result = pco.me
       data = result["data"]
       included = result["included"]

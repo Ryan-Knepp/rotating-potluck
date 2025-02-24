@@ -1,4 +1,4 @@
-require_relative "../../../../lib/pco"
+require_relative "../../../../lib/api"
 
 class Api::V1::HouseholdsController < ApplicationController
   before_action :set_household, only: %i[ show update destroy ]
@@ -77,9 +77,9 @@ class Api::V1::HouseholdsController < ApplicationController
       if pco_household.nil?
         pco_household = @household.pco_household
       end
-      pco = PCO_Api.new(token)
+      pco = Api.new(token)
       result = pco.get_household_and_people(pco_household)
-      included_mapping = PCO_Api.included_to_mapping(result["included"])
+      included_mapping = Api.included_to_mapping(result["included"])
       household_data = included_mapping["household"][pco_household]
       if @household.nil?
         @household = Household.find_or_initialize_by(pco_household: pco_household, organization: current_org)
