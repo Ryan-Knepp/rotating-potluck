@@ -11,8 +11,12 @@ export const Route = createRootRoute({
       <Nav />
       <Outlet />
       <Toaster />
-      <TanStackRouterDevtools />
-      <ReactQueryDevtools />
+      {import.meta.env.DEV && (
+        <>
+          <TanStackRouterDevtools />
+          <ReactQueryDevtools />
+        </>
+      )}
     </>
   ),
   notFoundComponent: () => <NotFound />,
