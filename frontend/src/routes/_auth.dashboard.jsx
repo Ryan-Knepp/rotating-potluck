@@ -13,6 +13,7 @@ import {
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import PotluckIterationList from "@/components/dashboard/potluck-iteration-list";
+import EmptyState from "@/components/dashboard/empty-state";
 import { splitDateRange } from "@/lib/utils";
 import { useApi } from "@/hooks/use-api";
 import { isPast, isToday, isFuture } from "date-fns";
@@ -65,6 +66,9 @@ export default function RotatingPotluckDashboard() {
     return isPast(to);
   });
 
+  const hasActiveOrUpcoming =
+    activePotluckIterations.length > 0 || upcomingPotluckIterations.length > 0;
+
   const totalAttendees =
     (attendees.households?.reduce((total, household) => {
       return total + (household.people?.length || 0);
@@ -81,12 +85,14 @@ export default function RotatingPotluckDashboard() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <div className="flex gap-4">
-          <Button asChild>
-            <Link to="/potlucks">
-              <PlusCircleIcon className="mr-2 h-4 w-4" />
-              Create New Group
-            </Link>
-          </Button>
+          {hasActiveOrUpcoming && (
+            <Button asChild>
+              <Link to="/potlucks">
+                <PlusCircleIcon className="mr-2 h-4 w-4" />
+                Create New Group
+              </Link>
+            </Button>
+          )}
           <Button asChild variant="outline">
             <Link to="/people">
               <UserPlusIcon className="mr-2 h-4 w-4" />
@@ -153,6 +159,7 @@ export default function RotatingPotluckDashboard() {
           </CardContent>
         </Card>
       </div>
+      {!hasActiveOrUpcoming && <EmptyState />}
       {activePotluckIterations.length > 0 && (
         <PotluckIterationList
           title="Current Active Potluck Groups"
