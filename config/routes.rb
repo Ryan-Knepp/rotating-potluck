@@ -15,10 +15,10 @@ Rails.application.routes.draw do
   end
 
   # actual oauth2 login
-  get "auth/url" => "oauth#url"
-  get "auth/login" => "oauth#login"
-  get "auth/complete" => "oauth#complete"
-  get "auth/logout" => "oauth#logout"
+  get "oauth/url" => "oauth#url"
+  get "oauth/login" => "oauth#login"
+  get "oauth/complete" => "oauth#complete"
+  get "oauth/logout" => "oauth#logout"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

@@ -83,5 +83,4 @@ test:
 production:
   <<: *default
   database: potluck
-  # username: rotating_potluck
-  # password: <%= ENV["ROTATING_POTLUCK_DATABASE_PASSWORD"] %>
+  # prod will have DATABASE_URL set as a secret

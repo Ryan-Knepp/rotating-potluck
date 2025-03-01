@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
   const isAuthenticated = !!user;
 
   const login = useCallback(async (user) => {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/url`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/oauth/url`, {
       credentials: "include",
     });
 
@@ -43,7 +43,7 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(async () => {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/auth/logout`,
+      `${import.meta.env.VITE_API_URL}/oauth/logout`,
       {
         credentials: "include",
       }
@@ -54,7 +54,7 @@ export function AuthProvider({ children }) {
 
   const authComplete = async (code) => {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/auth/complete?code=${code}`,
+      `${import.meta.env.VITE_API_URL}/oauth/complete?code=${code}`,
       {
         credentials: "include",
       }

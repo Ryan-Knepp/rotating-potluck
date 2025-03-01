@@ -1,10 +1,7 @@
 require "pco_api"
 require "oauth2"
 
-class PCO_Api
-  # OAUTH_APP_ID = ENV.fetch("PCO_APP_ID").freeze
-  # OAUTH_SECRET = ENV.fetch("PCO_SECRET").freeze
-  # DOMAIN = ENV.fetch("DOMAIN", "http://localhost:3000").freeze
+class Api
   API_URL = "https://api.planningcenteronline.com"
   TOKEN_EXPIRATION_PADDING = 300
   PERSONAL_TOKEN = ENV.fetch("PCO_PERSONAL_TOKEN").freeze

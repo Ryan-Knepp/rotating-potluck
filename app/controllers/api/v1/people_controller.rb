@@ -1,4 +1,4 @@
-require_relative "../../../../lib/pco"
+require_relative "../../../../lib/api"
 
 class Api::V1::PeopleController < ApplicationController
   before_action :set_person, only: %i[ show update destroy ]
@@ -25,7 +25,7 @@ class Api::V1::PeopleController < ApplicationController
       if pco_household
         household = Household.find_or_initialize_by(pco_household: pco_household)
         if household.new_record?
-          result = PCO_Api.new(token).get_household(pco_household)
+          result = Api.new(token).get_household(pco_household)
           household.name = result["data"]["attributes"]["name"]
           household.avatar_url = result["data"]["attributes"]["avatar"]
           household.organization = current_org
@@ -58,10 +58,10 @@ class Api::V1::PeopleController < ApplicationController
   # GET /people/search
   def search
     # search for people via the planning center api
-    pco = PCO_Api.new(token)
+    pco = Api.new(token)
     result = pco.search_people(search_params[:name], search_params[:page].to_i)
     total = result["meta"]["total_count"]
-    included_mapping = PCO_Api.included_to_mapping(result["included"])
+    included_mapping = Api.included_to_mapping(result["included"])
     people = result["data"].map do |data|
       pco_person = data["id"]
       p = Person.find_or_initialize_by(pco_person: pco_person)

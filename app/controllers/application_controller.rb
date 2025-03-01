@@ -3,7 +3,6 @@ require "oauth2"
 class ApplicationController < ActionController::API
   OAUTH_APP_ID = ENV.fetch("PCO_APP_ID").freeze
   OAUTH_SECRET = ENV.fetch("PCO_SECRET").freeze
-  DOMAIN = ENV.fetch("DOMAIN", "http://localhost:3000").freeze
   API_URL = "https://api.planningcenteronline.com"
   TOKEN_EXPIRATION_PADDING = 300
 
